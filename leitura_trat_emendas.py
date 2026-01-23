@@ -1,4 +1,3 @@
-from enum import unique
 import pandas as pd
 
 #Verificar Emendas
@@ -10,16 +9,16 @@ dfEP.isnull().sum()
 
 #Tratamento da coluna MUNICÍPIOS em Emendas
 #Encontra linhas com Municipio vazio
-#e cria a coluna Municipio corrigido, com os valores nao vazios da original
-munivazio = dfEP["Municipio"].fillna("").str.strip() == ""
+#e cria a coluna Municipio corrigido, com os valores não vazios da original
+municipiovazio = dfEP["Municipio"].fillna("").str.strip() == ""
 dfEP["Municipio_corrigido"] = dfEP["Municipio"]
 
-# Slice onde Municipio está vazio
-dfEP.loc[munivazio, "Municipio_corrigido"] = (
+# Slice onde Municipio está vazio mas o nome está na coluna NomeProjeto
+dfEP.loc[municipiovazio, "Municipio_corrigido"] = (
     dfEP["NomeProjeto"].str.split("de", n=1).str[1]
 )
 
-#Encontrando quem ainda está em branco:
+#Encontrando quem continua em branco:
 projemdef = dfEP["NomeProjeto"].str.contains("Em Definicao", na=False)
 dfEP.loc[projemdef, "Municipio_corrigido"] = "RS"
 dfEP["Municipio_corrigido"] = dfEP["Municipio_corrigido"].str.lstrip()
@@ -47,7 +46,14 @@ dfEP['Nome_deputado_padronizado'] = dfEP['Deputado'].map(emendas_dictnomes)
 print(dfEP.head())
 
 #Eliminando colunas desnecessárias
-dfEP = dfEP.drop(columns=['CodUo', 'CodProjeto', 'CodSubtitulo', 'SubtituloResumido'])
+dfEP = dfEP.drop(columns=['CodUo', 'CodProjeto', 'CodSubtitulo', 'SubtituloResumido', 'Municipio'])
 print(dfEP.columns)
 
 dfEP.to_csv('dados tratados/Emendas_tratado.csv', index=False)
+
+#Somar todas as emendas que um deputado mandou para uma cidade específica
+dfEP_agrupado = dfEP.groupby(['Nome_deputado_padronizado', 'Municipio_corrigido']).agg({
+    'Valor': 'sum'
+}).reset_index()
+
+print(dfEP_agrupado.head())
