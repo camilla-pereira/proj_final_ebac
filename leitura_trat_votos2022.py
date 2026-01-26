@@ -45,7 +45,15 @@ print(votacao2022.columns)
 
 #Vamos padronizar os nomes conforme a planilha NOME PADRONIZADO que fizemos no sheets:
 dictnomes = dict(zip(DepsEleitos2022['CANDIDATO_2022'],DepsEleitos2022['NOME PADRONIZADO']))
-votacao2022['Nome_candidato_padronizado'] = votacao2022['Nome candidato'].map(dictnomes)
+votacao2022['Nome_deputado_padronizado'] = votacao2022['Nome candidato'].map(dictnomes)
 
+#Vamos padronizar os MUNICIPIOS conforme a planilha Municipio corrigido que fizemos no sheets:
+municipioslista2022 = pd.read_csv('dados tratados/listamunicipioscorrigidosvotos2022.csv')
+df_municipioslista22 = pd.DataFrame(municipioslista2022)
+
+municipiosdictnomes = dict(zip(df_municipioslista22['Município original 2022'],df_municipioslista22['Municipio_corrigido']))
+votacao2022['MUNICIPIO PADRONIZADO'] = votacao2022['Município'].map(municipiosdictnomes)
+
+print(votacao2022.head(7))
+print(votacao2022['MUNICIPIO PADRONIZADO'].value_counts())
 votacao2022.to_csv("dados tratados/votos2022.csv", index=False)
-

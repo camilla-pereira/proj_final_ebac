@@ -40,7 +40,16 @@ votacao2018 = votos_eleitos_2018.drop(columns=['Cor/raça', 'Estado civil', 'Fai
 
 #Vamos padronizar os nomes conforme a planilha NOME PADRONIZADO que fizemos no sheets:
 dictnomes2018 = dict(zip(enviaram_emendas18['CANDIDATO_2018'],enviaram_emendas18['NOME PADRONIZADO']))
-votacao2018['Nome_candidato_padronizado'] = votacao2018['Nome candidato'].map(dictnomes2018)
+votacao2018['Nome_deputado_padronizado'] = votacao2018['Nome candidato'].map(dictnomes2018)
 #print(dictnomes2018)
 
+#Vamos padronizar os MUNICIPIOS conforme a planilha Municipio corrigido que fizemos no sheets:
+municipioslista2018 = pd.read_csv('dados tratados/listamunicipioscorrigidosvotos2018.csv')
+df_municipioslista18 = pd.DataFrame(municipioslista2018)
 
+municipiosdictnomes18 = dict(zip(df_municipioslista18['municipio original 2018'],df_municipioslista18['Municipio_corrigido']))
+votacao2018['MUNICIPIO PADRONIZADO'] = votacao2018['Município'].map(municipiosdictnomes18)
+
+votacao2018.to_csv('dados tratados/votos2018.csv', index=False)
+
+print(votacao2018.head())

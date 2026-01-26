@@ -1,5 +1,3 @@
-from pydoc import describe
-
 import pandas as pd
 
 pd.set_option('display.max_columns', None)
@@ -12,7 +10,7 @@ print(vota2022.columns)
 vota2018 = pd.read_csv('dados tratados/votos2018.csv')
 
 #Análise Exploratória I: Votos totais
-Votos22PorMunPorDep = vota2022.groupby(['Nome_candidato_padronizado','Situação totalização']).agg({'Votos nominais': 'sum'})
+Votos22PorMunPorDep = vota2022.groupby(['Nome_deputado_padronizado','Situação totalização']).agg({'Votos nominais': 'sum'})
 print("Soma de Votos por Município em cada Candidato: \n", Votos22PorMunPorDep.head(20))
 print("\n \n \n")
 
@@ -21,7 +19,7 @@ print("\n \n \n")
 
 candidato = 'MATHEUS PEREIRA GOMES'
 top5_municipios = (
-    vota2022[vota2022["Nome_candidato_padronizado"] == candidato]
+    vota2022[vota2022["Nome_deputado_padronizado"] == candidato]
     .sort_values("Votos nominais", ascending=False, ignore_index=True)
     .head(20)
 )
@@ -30,10 +28,3 @@ top5_municipios.drop_duplicates(subset=['Município'], inplace=True)
 print("Municípios que concentram votos em:", candidato, "\n \n", top5_municipios.head(30))
 print("\n \n \n")
 
-#Vamos dar um join nas duas tabelas de votos para fazer uma análise mais robusta no looker:
-print(vota2018.dtypes)
-print(vota2022.dtypes)
-
-votos2018a2022 = pd.concat([vota2018, vota2022], ignore_index=True)
-print(votos2018a2022['Ano de eleição'].value_counts())
-votos2018a2022.to_csv('dados tratados/votos2018a2022.csv')

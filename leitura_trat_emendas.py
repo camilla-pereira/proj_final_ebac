@@ -51,9 +51,11 @@ print(dfEP.columns)
 
 dfEP.to_csv('dados tratados/Emendas_tratado.csv', index=False)
 
+#deixando os municípios em caps e com o mesmo nome de coluna das tabelas de voto
+dfEP['MUNICIPIO PADRONIZADO'] = dfEP['Municipio_corrigido'].str.upper()
+print(dfEP.head())
+
 #Somar todas as emendas que um deputado mandou para uma cidade específica
-dfEP_agrupado = dfEP.groupby(['Nome_deputado_padronizado', 'Municipio_corrigido']).agg({
+dfEP_agrupado = dfEP.groupby(['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO']).agg({
     'Valor': 'sum'
 }).reset_index()
-
-print(dfEP_agrupado.head())
