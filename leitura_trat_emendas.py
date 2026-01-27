@@ -64,6 +64,10 @@ dfEP['Ano_de_envio'] = pd.to_numeric(dfEP['Ano'], errors='coerce')
 print(dfEP.head())
 dfEP.describe()
 
+#Setando categorias para o mesmo tipo, para evitar erros de soma lá na frente
+dfEP['Nome_deputado_padronizado'].astype(str).str.strip()
+dfEP['MUNICIPIO PADRONIZADO'].astype(str).str.strip()
+
 #Somar todas as emendas que um deputado mandou para uma cidade específica
 dfEP_agrupado = dfEP.groupby(['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'Ano_de_envio']).agg({
     'Valor': 'sum'
@@ -80,11 +84,8 @@ def definir_ciclo(Ano_de_envio):
     return Ano_de_envio
 
 dfEP_agrupado['ciclo_eleitoral'] = dfEP_agrupado['Ano_de_envio'].apply(definir_ciclo)
-df_EP_merge = dfEP_agrupado.groupby(['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'ciclo_eleitoral', 'Ano_de_envio']).agg({'Valor': 'sum'}).reset_index()
-print(df_EP_merge.head())
-print(df_EP_merge['ciclo_eleitoral'].value_counts())
-print(df_EP_merge.columns)
-print(df_EP_merge.dtypes)
+dfEP_agrupado['ciclo_eleitoral'].astype(str).str.strip()
+
 print(dfEP_agrupado.head())
 
 #Deu certo, agora só tenho dois ciclos eleitorais (o ano de eleição). Bora pro merge!
