@@ -27,4 +27,3 @@ top5_municipios.drop_duplicates(subset=['Município'], inplace=True)
 
 print("Municípios que concentram votos em:", candidato, "\n \n", top5_municipios.head(30))
 print("\n \n \n")
-

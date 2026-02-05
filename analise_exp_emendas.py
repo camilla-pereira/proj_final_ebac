@@ -3,7 +3,7 @@ import pandas as pd
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-#Ler a base de dados e reduzir CSV apenas para colunas essenciais
+#Ler a base de dados
 EmendasDF = pd.read_csv('dados tratados/Emendas_tratado.csv')
 
 #Análise Exploratória I: Distribuição com soma

@@ -19,7 +19,7 @@ votos_limpos = votos2018a2022.groupby(
 votos2018a2022.to_csv('dados tratados/votos2018a2022.csv')
 
 emendas_limpas = LTE.dfEP_agrupado.groupby(
-    ['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'ciclo_eleitoral', 'Ano_de_envio'], dropna=False
+    ['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'ciclo_eleitoral', 'Ano_de_envio', 'Partido', 'NomeProjeto'], dropna=False
 ).agg({'Valor':'sum'}).reset_index()
 
 df_master = pd.merge(
@@ -30,29 +30,28 @@ df_master = pd.merge(
 
 print(df_master.columns)
 
-# Colocando 0 em quem não teve emenda para não dar erro no Looker
-df_master['Valor'] = df_master['Valor'].fillna(0)
-df_master['Votos nominais'] = df_master['Votos nominais'].fillna(0)
-
 # Como eu quero ver as emendas ano a ano, o Gemini me orientou a incluir essa parte, que calcula os votos só uma vez:
-df_master = df_master.sort_values(['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'ciclo_eleitoral', 'Ano_de_envio'])
+df_master = df_master.sort_values(['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'ciclo_eleitoral', 'Ano_de_envio', 'NomeProjeto'])
 df_master['Ano_de_envio'] = df_master['Ano_de_envio'].fillna(0).astype(int)
 
-# O subset define o que identifica um "voto único": a combinação de Quem, Onde e Quando (Ciclo)
+# O subset para definir "voto único" (Quem, Onde e Quando (Ciclo))
 mascara_duplicados = df_master.duplicated(
     subset=['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'ciclo_eleitoral'],
-    keep='first' # Mantém o valor apenas na primeira linha encontrada
+    keep='first'
 )
 
-# Zerando os votos nas linhas excedentes | Onde mascara_duplicados for True, o Voto vira 0
+# Zerando os votos nas linhas excedentes
 df_master.loc[mascara_duplicados, 'Votos nominais'] = 0
+
+# Colocando 0 em quem não teve emenda para não dar erro no Looker
+df_master['Votos nominais'] = df_master['Votos nominais'].fillna(0)
+df_master['Valor'] = df_master['Valor'].fillna(0)
+df_master['NomeProjeto'] = df_master['NomeProjeto'].fillna('PROJETO NÃO INFORMADO')
+df_master['Partido'] = df_master['Partido'].fillna('SEM PARTIDO/OUTROS')
 
 # Números finais
 print(f"Soma Final de Emendas: {df_master['Valor'].sum():,.2f}")
 print(f"Soma Final de Votos:   {df_master['Votos nominais'].sum():,.0f}")
 
-
-print(df_master.columns)
 #print(df_master.head())
-
-df_master.to_csv('dados tratados/basecompletaparalooker.csv', index=False, encoding='utf-8-sig')
+df_master.to_csv('dados tratados/base_completa_comprojetos.csv', index=False, encoding='utf-8-sig')

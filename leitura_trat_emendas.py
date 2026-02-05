@@ -69,7 +69,7 @@ dfEP['Nome_deputado_padronizado'].astype(str).str.strip()
 dfEP['MUNICIPIO PADRONIZADO'].astype(str).str.strip()
 
 #Somar todas as emendas que um deputado mandou para uma cidade específica
-dfEP_agrupado = dfEP.groupby(['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'Ano_de_envio']).agg({
+dfEP_agrupado = dfEP.groupby(['Nome_deputado_padronizado', 'MUNICIPIO PADRONIZADO', 'Ano_de_envio', 'Partido', 'NomeProjeto']).agg({
     'Valor': 'sum'
 }).reset_index()
 
