@@ -59,6 +59,13 @@ dfEP.to_csv('dados tratados/Emendas_tratado.csv', index=False)
 dfEP['MUNICIPIO PADRONIZADO'] = dfEP['Municipio_corrigido'].str.upper()
 print(dfEP.head())
 
+#Ao usar o dashboard, percebi 3 municípios com quebras nos nomes. Vamos ajustar agora:
+dfEP.loc[dfEP['MUNICIPIO PADRONIZADO'] == "BARAO DO COTEGIPE", 'MUNICIPIO PADRONIZADO'] = 'BARAO DE COTEGIPE'
+dfEP.loc[dfEP['MUNICIPIO PADRONIZADO'] == "BARAO", 'MUNICIPIO PADRONIZADO'] = 'BARAO DE COTEGIPE'
+dfEP.loc[dfEP['MUNICIPIO PADRONIZADO'] == "NVA BOA VISTA", 'MUNICIPIO PADRONIZADO'] = 'NOVA BOA VISTA'
+dfEP.loc[dfEP['MUNICIPIO PADRONIZADO'] == "NAO ME TOQUE", 'MUNICIPIO PADRONIZADO'] = 'NAO-ME-TOQUE'
+print(dfEP['MUNICIPIO PADRONIZADO'].unique())
+
 #Convertendo Ano para Numérico para usar como filtro no looker e separando de Ano de Eleição
 dfEP['Ano_de_envio'] = pd.to_numeric(dfEP['Ano'], errors='coerce')
 print(dfEP.head())

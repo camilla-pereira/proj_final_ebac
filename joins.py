@@ -49,6 +49,10 @@ df_master['Valor'] = df_master['Valor'].fillna(0)
 df_master['NomeProjeto'] = df_master['NomeProjeto'].fillna('PROJETO NÃO INFORMADO')
 df_master['Partido'] = df_master['Partido'].fillna('SEM PARTIDO/OUTROS')
 
+#Reparei na dash que um município ficou separado por uma aspa:
+df_master.loc[df_master['MUNICIPIO PADRONIZADO'] == "SANT'ANA DO LIVRAMENTO", 'MUNICIPIO PADRONIZADO'] = 'SANTANA DO LIVRAMENTO'
+print(df_master['MUNICIPIO PADRONIZADO'].value_counts())
+
 # Números finais
 print(f"Soma Final de Emendas: {df_master['Valor'].sum():,.2f}")
 print(f"Soma Final de Votos:   {df_master['Votos nominais'].sum():,.0f}")
